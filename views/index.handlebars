@@ -1,0 +1,59 @@
+<h1>Burgers Muncher</h1>
+
+<ul class="not-eaten">
+    <h1>Burgers to Devour</h1>
+    {{#each burgers}} {{#unless devoured}} {{> burgers/burger-block devoured=false}} {{/unless}} {{/each}}
+
+
+</ul>
+
+<ul class="eaten">
+    <h1>Burgers Devoured</h1>
+    {{#each burgers}} {{#if devoured}} {{> burgers/burger-block devoured=true}} {{/if}} {{/each}}
+</ul>
+
+<form id="new-burger">
+
+    <label for="burger">New Burger</label>
+    <input type="text" class="burger-form" id="burger">
+
+</form>
+
+<button type="submit" id="submit">Submit</button>
+
+<script type="text/javascript">
+
+    $("#submit").on('click', function (event) {
+        event.preventDefault();
+        var burgerInput = $("#burger").val().trim();
+
+        var newBurger = {
+            burger_name: burgerInput
+        }
+
+        $.post('/api/burgers', newBurger)
+            .then(function (data) {
+                console.log(data)
+                location.reload()
+
+            })
+    })
+
+    $(".devour").on('click', function (event) {
+        var id = $(this).data(id)
+        console.log(id)
+
+        $.ajax("/api/burgers/" + id.id, {
+            type: "PUT",
+            data: id.id
+        }).then(
+            function (response) {
+                console.log(response);
+                // Reload the page to get the updated list
+                location.reload();
+            }
+        );
+    });
+
+
+</script>
